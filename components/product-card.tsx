@@ -12,11 +12,11 @@ interface ProductCardProps {
 export function ProductCard({ product, onClick }: ProductCardProps) {
   return (
     <Card
-      className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105"
+      className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 bg-black text-white"
       onClick={onClick}
     >
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold text-gray-100 leading-tight">{product.name}</CardTitle>
+        <CardTitle className="text-lg font-semibold text-white leading-tight">{product.name}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="relative group">
@@ -25,7 +25,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             alt={`${product.name} bag`}
             width={200}
             height={200}
-            className="w-full h-48 object-cover rounded-lg bg-gray-110 transition-transform group-hover:scale-105"
+            className="w-full h-48 object-cover rounded-lg bg-gray-90 transition-transform group-hover:scale-105"
           />
           <div className="absolute top-2 right-2 bg-green-600 text-white px-3 py-1 rounded-full shadow-lg">
             <span className="text-lg font-bold">{product.rate}</span>
@@ -38,8 +38,9 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm text-gray-600">{product.unit}</p>
-          <p className="text-xs text-green-600 font-medium">Click image for pricing policies & regional rates</p>
+          <p className="text-sm text-white">{product.unit}</p>
+          {/* Changed text-green-300 to text-gray-300 for better contrast on black background */}
+          <p className="text-xs text-gray-300 font-medium">Click image for pricing policies & regional rates</p>
         </div>
       </CardContent>
     </Card>

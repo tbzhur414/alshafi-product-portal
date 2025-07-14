@@ -17,8 +17,13 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-gray-900">{product.name}</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <X className="h-6 w-6" />
+          {/* Enhanced close button for clarity */}
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+            aria-label="Close product details"
+          >
+            <X className="h-6 w-6 text-gray-600 hover:text-gray-900" />
           </button>
         </div>
 
@@ -83,16 +88,19 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
             </div>
           </div>
 
-          <Card>
+          <Card className="bg-black text-white">
+            {" "}
+            {/* Added bg-black and text-white here */}
             <CardHeader>
-              <CardTitle>Product Policies & Information</CardTitle>
+              <CardTitle className="text-white">Product Policies & Information</CardTitle>{" "}
+              {/* Changed text-gray-900 to text-white */}
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
                 {product.policies.map((policy, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span className="text-gray-700">{policy}</span>
+                    <span className="text-white">{policy}</span> {/* Changed text-gray-700 to text-white */}
                   </li>
                 ))}
               </ul>
