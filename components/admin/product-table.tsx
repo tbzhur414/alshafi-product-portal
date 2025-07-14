@@ -7,6 +7,8 @@ import Link from "next/link"
 import type { Product } from "@/data/products"
 import { deleteProduct } from "@/app/admin/actions"
 import { useRouter } from "next/navigation"
+import { useState } from "react" // Import useState
+import { SearchBar } from "@/components/search-bar" // Import SearchBar
 
 interface ProductTableProps {
   products: Product[]
@@ -14,6 +16,7 @@ interface ProductTableProps {
 
 export function ProductTable({ products }: ProductTableProps) {
   const router = useRouter()
+  const [searchTerm, setSearchTerm] = useState("") // State for search term
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
@@ -27,8 +30,20 @@ export function ProductTable({ products }: ProductTableProps) {
     }
   }
 
+  // Filter products based on search term
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
   return (
-    <div className="rounded-md border bg-white">
+    <div className="rounded-md border bg-white p-4">
+      {" "}
+      {/* Added padding */}
+      <div className="mb-4">
+        <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -40,14 +55,14 @@ export function ProductTable({ products }: ProductTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.length === 0 ? (
+          {filteredProducts.length === 0 ? (
             <TableRow>
               <TableCell colSpan={5} className="h-24 text-center text-gray-500">
-                No products found. Add some!
+                {searchTerm ? `No products found matching "${searchTerm}"` : "No products found. Add some!"}
               </TableCell>
             </TableRow>
           ) : (
-            products.map((product) => (
+            filteredProducts.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>{product.category}</TableCell>

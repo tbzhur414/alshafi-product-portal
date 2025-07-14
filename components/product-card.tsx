@@ -39,7 +39,6 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
 
         <div className="space-y-2">
           <p className="text-sm text-white">{product.unit}</p>
-          {/* Changed text-green-300 to text-gray-300 for better contrast on black background */}
           <p className="text-xs text-gray-300 font-medium">Click image for pricing policies & regional rates</p>
         </div>
       </CardContent>

@@ -1,13 +1,16 @@
 "use client"
 
+import type React from "react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import type { Product } from "@/data/products"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react" // Import useEffect
 import { useFormStatus } from "react-dom"
+import Image from "next/image" // Import Image component for preview
 
 interface ProductFormProps {
   action: (formData: FormData) => Promise<any>
@@ -33,6 +36,15 @@ export function ProductForm({ action, initialData }: ProductFormProps) {
     ],
   )
   const [policies, setPolicies] = useState(initialData?.policies || [""])
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(initialData?.image || null)
+
+  // Effect to update image preview when initialData.image changes (for edit mode)
+  useEffect(() => {
+    if (initialData?.image) {
+      setImagePreviewUrl(initialData.image)
+    }
+  }, [initialData?.image])
 
   const handleSubmit = async (formData: FormData) => {
     formData.append("transhipmentRates", JSON.stringify(transhipmentRates))
@@ -41,6 +53,17 @@ export function ProductForm({ action, initialData }: ProductFormProps) {
 
     if (initialData?.id) {
       formData.append("id", initialData.id)
+    }
+
+    // Append the image file if selected
+    if (imageFile) {
+      formData.append("imageFile", imageFile) // Use a new name for the file input
+    } else if (initialData?.image && !imageFile) {
+      // If no new file is selected but there was an existing image, keep its URL
+      formData.append("image", initialData.image)
+    } else {
+      // If no image was ever set and no new file is selected, ensure 'image' is not null
+      formData.append("image", "") // Or a default placeholder if desired
     }
 
     const result = await action(formData)
@@ -73,6 +96,17 @@ export function ProductForm({ action, initialData }: ProductFormProps) {
   const addPolicy = () => setPolicies([...policies, ""])
   const removePolicy = (index: number) => setPolicies(policies.filter((_, i) => i !== index))
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      setImagePreviewUrl(URL.createObjectURL(file))
+    } else {
+      setImageFile(null)
+      setImagePreviewUrl(initialData?.image || null) // Revert to initial if no new file
+    }
+  }
+
   return (
     <form action={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
       <div>
@@ -84,8 +118,23 @@ export function ProductForm({ action, initialData }: ProductFormProps) {
         <Input id="category" name="category" defaultValue={initialData?.category} required />
       </div>
       <div>
-        <Label htmlFor="image">Image URL (e.g., /placeholder.svg)</Label>
-        <Input id="image" name="image" defaultValue={initialData?.image} />
+        <Label htmlFor="imageFile">Product Image</Label>
+        <Input id="imageFile" type="file" accept="image/*" onChange={handleImageChange} />
+        {imagePreviewUrl && (
+          <div className="mt-4">
+            <p className="text-sm text-gray-600 mb-2">Image Preview:</p>
+            <Image
+              src={imagePreviewUrl || "/placeholder.svg"}
+              alt="Product Preview"
+              width={200}
+              height={200}
+              className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+            />
+          </div>
+        )}
+        {!imagePreviewUrl && initialData?.image && (
+          <p className="mt-2 text-sm text-gray-500">No new image selected. Current image will be used.</p>
+        )}
       </div>
       <div>
         <Label htmlFor="rate">Base Rate (Rs.)</Label>

@@ -21,6 +21,7 @@ export function ExportButton({ products }: ExportButtonProps) {
       "Category",
       "Base Rate",
       "Unit",
+      "Image URL", // Added Image URL
       "Transhipment Rates",
       "Region Wise Rates",
       "Policies",
@@ -37,6 +38,7 @@ export function ExportButton({ products }: ExportButtonProps) {
         product.category,
         product.rate,
         product.unit,
+        product.image, // Added product.image
         `"${transhipment}"`, // Wrap in quotes to handle commas/semicolons
         `"${regionWise}"`,
         `"${policies}"`,
